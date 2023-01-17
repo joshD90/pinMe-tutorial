@@ -16,10 +16,11 @@ const Login = () => {
     localStorage.setItem("token", JSON.stringify(resObj));
     //we also want to decode this token to extract user information and store this in localstorage
     const decoded = jwt_decode(resObj.credential);
-    console.log(decoded, "decoded");
+
     localStorage.setItem("userProfile", JSON.stringify(decoded));
+    //extract our client ID
     const { clientId } = resObj;
-    console.log(resObj);
+
     const { picture, name } = decoded;
     //create a user within our CMS
     const doc = {

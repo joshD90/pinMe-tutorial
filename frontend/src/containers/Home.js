@@ -5,28 +5,20 @@ import { Link, Routes, Route } from "react-router-dom";
 
 import { Sidebar, UserProfile } from "../components/index.js";
 import Pins from "./Pins.jsx";
-import { client } from "../client";
 import logo from "../assets/logo.png";
-import { userQuery } from "../utils/data.js";
+import { fetchUser, useFetchUser } from "../utils/useFetchUser.js";
 
 const Home = () => {
   const [toggleSideBar, setToggleSideBar] = useState(false);
   const [user, setUser] = useState(null);
   const scrollRef = useRef(null);
   //get our user info from local storage, if it does not exist or there is an issue, clear the storage
-  const userInfo =
-    localStorage.getItem("token") !== "undefined"
-      ? JSON.parse(localStorage.getItem("token"))
-      : localStorage.clear();
-
+  const { clientId } = fetchUser();
+  const userInfo = useFetchUser(clientId);
+  //we wrap our setUser in a useEffect to avoid rerenders
   useEffect(() => {
-    //get our id from the local storage, from token obj
-    const query = userQuery(userInfo?.clientId);
-    //use this to access our user from sanity
-    client.fetch(query).then((data) => {
-      setUser(data[0]);
-    });
-  }, [userInfo.clientId]);
+    setUser(userInfo);
+  }, [userInfo]);
 
   useEffect(() => {
     //make sure that the page is scrolled to the top of the page on loading
